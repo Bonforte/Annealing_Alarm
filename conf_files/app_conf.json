@@ -1,0 +1,15 @@
+{
+  "InfluxDB": {
+    "host": "172.18.4.178",
+    "port": "8086",
+    "database": "vacuum_monitor",
+    "msr_name": "pressure"
+  },
+  "Call-Monitor_Variables": {
+    "url": "https://www.google.com",
+    "timeout": 5,
+    "th": 1000,
+    "phone": "+40734260029",
+    "AF": 0
+  }
+}
