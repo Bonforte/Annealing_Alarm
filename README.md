@@ -1,14 +1,16 @@
 # Annealing_Alarm
 
-start android debugging server: sudo adb start-server
-start influxdb server: sudo systemctl start influxdb
+start android debugging server: sudo adb start-server;
 
-netcon- monitors internet. Contains SIMCall function
-vacmon_influx - monitors pressure values to see if they go over the threshhold
+start influxdb server: sudo systemctl start influxdb;
 
-main_guardcode - main code running the threads
+netcon- monitors internet. Contains SIMCall function;
 
-app_conf.json - Configuration files
+vacmon_influx - monitors pressure values to see if they go over the threshhold;
+
+main_guardcode - main code running the threads;
+
+app_conf.json - Configuration files;
 
 Please change pathing when downloading this code to your PC.
 
