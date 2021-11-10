@@ -9,7 +9,20 @@
     "url": "https://www.google.com",
     "timeout": 5,
     "th": 1000,
-    "phone": "+40734260029",
-    "AF": 0
+    "phone_array": ["+40734260029"],
+    "UF": 0,
+    "PF":0,
+    "SEN":0,
+    "SEU":0,
+    "UPS_address":"http://172.18.6.243/cgi-bin/realInfo.cgi"
+  },
+
+  "Email_credentials":{
+
+    "email_sender": "grafanaalarmingservice@gmail.com",
+    "password_sender": "Analiza_E8",
+    "email_receiver":["gnitescu4@gmail.com"]
+
   }
+  
 }
