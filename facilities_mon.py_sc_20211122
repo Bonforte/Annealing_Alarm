@@ -55,51 +55,33 @@ def Facilities_Monitoring (host, port, database,url, timeout,stop):
             try:
                 remaining_time,mode = tools.UPS_rd(json_conf)
                 print("Mode:"+mode)
-                if "L" in mode:
+                if mode=="L":
                     mode=1
-                elif "B" in mode:
+                else: 
                     mode=0
-
-                
                 
                 json_data=[{
                     "measurement":"UPS_Annealing_Monitor",
                     "time":timeset,
                     "fields": {
-                        "mode":mode,         
+                        "mode": mode,
                         "remaining_time":remaining_time
                     }
                 }]
                 client.write_points(json_data)
-                #Checking UPS mode
-                if mode==0 and json_conf["Call-Monitor_Variables"]["UFM"]==0:
-                    json_conf["Call-Monitor_Variables"]["UFM"]=1
-                    #Initiating call sequence to the persons in charge as alarm is triggered. (Pause of 60 seconds between sequence calls.)
-                    for phone in json_conf["Call-Monitor_Variables"]["phone_array"]:
 
-                        for i in range(3):
-
-                            tools.SIMCall(phone, json_conf)
-                else:
-                    json_conf["Call-Monitor_Variables"]["UFM"]=0
-                    
+                
                 json_conf["Call-Monitor_Variables"]["SEU"]=0
-
-                #Checking remaining time of UPS
-                if remaining_time <= json_conf["Call-Monitor_Variables"]["remaining_time_th"] and json_conf["Call-Monitor_Variables"]["UFT"]==0:
-                    json_conf["Call-Monitor_Variables"]["UFT"]=1
+                
+                if remaining_time <= json_conf["Call-Monitor_Variables"]["remaining_time_th"]: 
                     #Initiating call sequence to the persons in charge as alarm is triggered. (Pause of 60 seconds between sequence calls.)
                     for phone in json_conf["Call-Monitor_Variables"]["phone_array"]:
 
                         for i in range(3):
 
                             tools.SIMCall(phone, json_conf)
-
-                else:
-                    json_conf["Call-Monitor_Variables"]["UFT"]=0
-                    
                 print("UPS Remaining Time:"+str(remaining_time))
-                                
+                            
 
             #Sending email if connection to UPS through network failed.
             except:

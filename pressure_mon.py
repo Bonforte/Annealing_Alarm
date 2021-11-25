@@ -1,17 +1,24 @@
-#this will monitor for pressure values that exceed a threshhold
+#this will monitor for pressure and temperature values that exceed a threshhold
 
 
 from influxdb import InfluxDBClient
 import time
 import json
 import tools
+from ppadb.client import Client as AdbClient
+import time
+from bs4 import BeautifulSoup
+import urllib.request
+from IPython.display import HTML
+import smtplib
+import os
 
 
 
-def VacAlert(th, host, port, database, measurement, stop):
-
+def VacAlert(thp,tht, host, port, database, measurement, stop):
+    
     #Defining json config file pathing. Change this when moving code from PC to PC.
-    json_file_path="/home/georgen24/Desktop/Python_Grafana/conf_files/app_conf.json"
+    json_file_path="/home/eliade/Desktop/Annealing_Alarming/Python_Grafana/conf_files/app_conf.json"
 
 
     #Checking if stop condition is active when first starting the code.
@@ -21,6 +28,7 @@ def VacAlert(th, host, port, database, measurement, stop):
     else:
         #Enter while loop
         while(True):
+            print("\n#############################\n")
 
 
             #Opening json file and checking if it can open. Otherwise sending email
@@ -50,9 +58,9 @@ def VacAlert(th, host, port, database, measurement, stop):
 
             #Initializing empty working code variables.
             data = []
-            pr1 = []
-            pr2 = []
-            pr = []
+            pressure = []
+            temp = []
+            
 
 
 
@@ -70,10 +78,10 @@ def VacAlert(th, host, port, database, measurement, stop):
 
             #If query was successful
             if result:
-
+                
                 try:
                     headings = result.raw['series'][0]['columns']
-                    
+                    #Retrieving last 20 entries
                     for entry in reversed(result.raw['series'][0]['values'][-20:]): 
                         data.append(entry)  
 
@@ -82,37 +90,23 @@ def VacAlert(th, host, port, database, measurement, stop):
                     print("Could not retrieve data from active measurement. Reason: "+str(e))    
                     tools.SendEmail(json_conf,"INF")
 
-                #Dividing extracted pressure values for specific sensors. One vector for each PR. Both vectors are inserted into PR matrix.
+                #Dividing extracted data into temperature and pressure sensors.
                 for entry in data:
 
-                    if entry[2] == "PR1":
-                        pr1.append(entry[1])
+                    pressure.append(entry[-2])
+                    temp.append(entry[-1])
 
-                    elif entry[2] == "PR2":
-                        pr2.append(entry[1])
+                #Initializing counter for values over threshhold
+                counter = 0
+                #Checking extracted values for over limit values (pressure).
+                for value in pressure:
+                    #If a value is overlimit, the counter increments.
+                    if value >= thp:
+                        counter+=1
 
-                    else:
-                        pass
-
-
-                pr.append(pr1)
-                pr.append(pr2)
-                #PR matrix:
-                print(pr)
-
-
-                #Checking extracted values for over limit values.
-                for vec in range(2):
-                    
-                    counter = 0
-
-                    #Checking each sensor
-                    for value in pr[vec]:
-                        if value >= th:
-                            counter += 1
-
+                    #If more than half the extracted values are over limit we trigger the alarm
                     if counter >= 10:
-                        print("Threshhold value exceeded. Calling 5 time sequence.")
+                        print("Threshhold value exceeded for pressure. Calling 3 time sequence.")
                         
                         #Checking alarm flags and updating.
                         if (json_conf["Call-Monitor_Variables"]["PF"] == 0):
@@ -123,18 +117,51 @@ def VacAlert(th, host, port, database, measurement, stop):
                             for phone in json_conf["Call-Monitor_Variables"]["phone_array"]:
 
                                 for i in range(3):
+                                    print ("Call"+str(i))
+                                    tools.SIMCall(phone,json_conf)
+                                    
 
-                                    tools.SIMCall(phone)
-                                    time.sleep(60)
+                        break
+                
+                if counter <10:
+                    print("\nNo problems detected in monitoring of pressure!")
+                    json_conf["Call-Monitor_Variables"]["PF"] = 0
+
+                #Resetting counter for values over threshhold
+                counter = 0
+                #Checking extracted values for over limit values (temperature).
+                for value in temp:
+                    #If a value is overlimit, the counter increments.
+                    if value >= tht:
+                        counter+=1
+
+                    #If more than half the extracted values are over limit we trigger the alarm
+                    if counter >= 10:
+                       
+                        
+                        #Checking alarm flags and updating.
+                        if (json_conf["Call-Monitor_Variables"]["TF"] == 0):
+                            print("Threshhold value exceeded for temperature. Calling 3 time sequence.")
+
+                            json_conf["Call-Monitor_Variables"]["TF"] = 1
+
+                            #Triggering call sequence
+                            for phone in json_conf["Call-Monitor_Variables"]["phone_array"]:
+
+                                for i in range(3):
+                                    print ("Call"+str(i))
+                                    tools.SIMCall(phone,json_conf)
+                                    
 
                         break
 
-                    else:
-                        print("No problems detected in monitoring of PR" + str(vec + 1) + "!")
-                        json_conf["Call-Monitor_Variables"]["PF"] = 0
+                if counter<10:
+                    print("No problems detected in monitoring of temperature!")
+                    json_conf["Call-Monitor_Variables"]["TF"] = 0
+                
 
 
-            #Pause
+            #Pause between read-outs
             time.sleep(30)
 
 
@@ -152,18 +179,7 @@ def VacAlert(th, host, port, database, measurement, stop):
 
 
 
-        #When script ends, values get reset.
-        print("Completing ending script protocols!")
-
-        json_conf["Call-Monitor_Variables"]["UF"]=0
-        json_conf["Call-Monitor_Variables"]["PF"]=0
-        json_conf["Call-Monitor_Variables"]["SEN"]=0
-        json_conf["Call-Monitor_Variables"]["SEU"]=0
-
-        with open(json_file_path,"w") as file:
-            json.dump(json_conf, file,indent=2)
-            
-        time.sleep(1)
+        
         
 
 

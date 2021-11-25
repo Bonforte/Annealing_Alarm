@@ -1,28 +1,34 @@
 {
   "InfluxDB": {
-    "host": "172.18.4.178",
+    "host": "172.18.4.156",
     "port": "8086",
-    "database": "vacuum_monitor",
-    "msr_name": "pressure"
+    "database": "Annealing",
+    "msr_name": "Annealing_Monitor"
   },
   "Call-Monitor_Variables": {
     "url": "https://www.google.com",
     "timeout": 5,
-    "th": 1000,
-    "phone_array": ["+40734260029"],
+    "tht": 2000,
+    "thp": 0.00014,
+    "remaining_time_th": 30,
+    "phone_array": [
+      "+40725128477",
+      "+40729778846"
+    ],
     "UF": 0,
-    "PF":0,
-    "SEN":0,
-    "SEU":0,
-    "UPS_address":"http://172.18.6.243/cgi-bin/realInfo.cgi"
+    "PF": 0,
+    "TF": 0,
+    "SEN": 1,
+    "SEU": 0,
+    "UPS_address": "http://172.18.6.243/cgi-bin/realInfo.cgi",
+    "UFM": 0,
+    "UFT": 0
   },
-
-  "Email_credentials":{
-
+  "Email_credentials": {
     "email_sender": "grafanaalarmingservice@gmail.com",
     "password_sender": "Analiza_E8",
-    "email_receiver":["gnitescu4@gmail.com"]
-
+    "email_receiver": [
+      "gnitescu4@gmail.com"
+    ]
   }
-  
 }
