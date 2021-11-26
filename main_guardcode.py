@@ -88,7 +88,7 @@ except:
     json_conf["Call-Monitor_Variables"]["UFM"]=0
     json_conf["Call-Monitor_Variables"]["PF"]=0
     json_conf["Call-Monitor_Variables"]["TF"]=0
-    json_conf["Call-Monitor_Variables"]["SEN"]=0
+    json_conf["Call-Monitor_Variables"]["CN"]=0
     json_conf["Call-Monitor_Variables"]["SEU"]=0
 
     with open(json_file_path,"w") as file:

@@ -54,7 +54,9 @@ def Facilities_Monitoring (host, port, database,url, timeout,stop):
 
             #reading value and configuring alarm flag with its specific value.
             try:
+                
                 remaining_time,mode = tools.UPS_rd(json_conf)
+                json_conf["Call-Monitor_Variables"]["SEU"] = 0
                 print("Mode:"+mode)
                 if "L" in mode:
                     mode=1
@@ -84,10 +86,11 @@ def Facilities_Monitoring (host, port, database,url, timeout,stop):
                 else:
                     json_conf["Call-Monitor_Variables"]["UFM"]=0
                     
-                json_conf["Call-Monitor_Variables"]["SEU"]=0
+                
 
                 #Checking remaining time of UPS
                 if remaining_time <= json_conf["Call-Monitor_Variables"]["remaining_time_th"] and json_conf["Call-Monitor_Variables"]["UFT"]==0:
+
                     json_conf["Call-Monitor_Variables"]["UFT"]=1
                     #Initiating call sequence to the persons in charge as alarm is triggered. (Pause of 60 seconds between sequence calls.)
                     for phone in json_conf["Call-Monitor_Variables"]["phone_array"]:
@@ -124,7 +127,7 @@ def Facilities_Monitoring (host, port, database,url, timeout,stop):
                 print("No Internet connection detected!\n")
                 
                 #If request variable encountered an error, in this exception we will issue a call sequence, because of internet outage.
-                if (json_conf["Call-Monitor_Variables"]["SEN"] == 0):
+                if (json_conf["Call-Monitor_Variables"]["CN"] == 0):
 
                     for phone in json_conf["Call-Monitor_Variables"]["phone_array"]:
 
@@ -133,13 +136,13 @@ def Facilities_Monitoring (host, port, database,url, timeout,stop):
                             tools.SIMCall(phone, json_conf)
                             
 
-                    json_conf["Call-Monitor_Variables"]["SEN"]=1
+                    json_conf["Call-Monitor_Variables"]["CN"]=1
                    
 
 
             #Checking stop condition.
             if stop():
-                print("Stopping Initiated for netcon!")
+                print("Stopping Initiated for facilities_mon!")
                 time.sleep(1)
                 break
 

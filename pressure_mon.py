@@ -137,7 +137,6 @@ def VacAlert(thp,tht, host, port, database, measurement, stop):
 
                     #If more than half the extracted values are over limit we trigger the alarm
                     if counter >= 10:
-                       
                         
                         #Checking alarm flags and updating.
                         if (json_conf["Call-Monitor_Variables"]["TF"] == 0):
