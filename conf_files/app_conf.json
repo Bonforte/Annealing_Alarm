@@ -18,11 +18,11 @@
     "UF": 0,
     "PF": 0,
     "TF": 0,
-    "SEN": 1,
+    "SEN": 0,
     "SEU": 0,
     "UPS_address": "http://172.18.6.243/cgi-bin/realInfo.cgi",
-    "UFM": 0,
-    "UFT": 0
+    "UFT": 0,
+    "UFM": 0
   },
   "Email_credentials": {
     "email_sender": "grafanaalarmingservice@gmail.com",

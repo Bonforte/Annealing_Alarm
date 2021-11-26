@@ -46,6 +46,7 @@ def Facilities_Monitoring (host, port, database,url, timeout,stop):
             except Exception as e:
                 print("Could not establish connection to InfluxDB server. Reason: " + str(e))
                 tools.SendEmail(json_conf,"INF")
+                tools.SendEmail_mem()
 
 
 
