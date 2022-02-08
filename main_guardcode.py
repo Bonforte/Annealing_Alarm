@@ -20,15 +20,24 @@ import tools
 #Initializing starting variables.
 print("Initializing settings...")
 
-json_file_path="/home/eliade/Desktop/Annealing_Alarming/Python_Grafana/conf_files/app_conf.json"
+json_file_path_1="/home/eliade/Desktop/Annealing_Alarming/Python_Grafana/conf_files/main_conf.json"
+json_file_path_2="/home/eliade/Desktop/Annealing_Alarming/Python_Grafana/conf_files/facilities_conf.json"
+json_file_path_3="/home/eliade/Desktop/Annealing_Alarming/Python_Grafana/conf_files/vacuum_conf.json"
 threads = []
 stop = False
 
 
 #Opening json file. Otherwise email.
 try:
-    with open(json_file_path,"r") as file:
-        json_conf = json.load(file)
+    with open(json_file_path_1,"r") as file:
+        json_conf_1 = json.load(file)
+    time.sleep(0.5)
+    with open(json_file_path_2,"r") as file2:
+    	json_conf_2=json.load(file2)
+    time.sleep(0.5)
+    with open(json_file_path_3,"r") as file3:
+    	json_conf_3=json.load(file3)
+    time.sleep(0.5)
 
 except Exception as e:
     print("Cannot open json file. Reason: "+str(e))
@@ -39,14 +48,14 @@ time.sleep(1)
 
 
 #Loading important values from json configuration file.
-host =json_conf["InfluxDB"]["host"]
-port =json_conf["InfluxDB"]["port"]
-database = json_conf["InfluxDB"]["database"]
-measurement = json_conf["InfluxDB"]["msr_name"]
-url = json_conf["Call-Monitor_Variables"]["url"]
-timeout = json_conf["Call-Monitor_Variables"]["timeout"]
-thp = json_conf["Call-Monitor_Variables"]["thp"]
-tht = json_conf["Call-Monitor_Variables"]["tht"]
+host =json_conf_1["InfluxDB"]["host"]
+port =json_conf_1["InfluxDB"]["port"]
+database = json_conf_1["InfluxDB"]["database"]
+measurement = json_conf_1["InfluxDB"]["msr_name"]
+url = json_conf_1["Call-Monitor_Variables"]["url"]
+timeout = json_conf_1["Call-Monitor_Variables"]["timeout"]
+thp = json_conf_1["Call-Monitor_Variables"]["thp"]
+tht = json_conf_1["Call-Monitor_Variables"]["tht"]
 
 time.sleep(1)
 
@@ -84,15 +93,19 @@ except:
     #When script ends, values get reset.
     print("Completing ending script protocols!")
 
-    json_conf["Call-Monitor_Variables"]["UFT"]=0
-    json_conf["Call-Monitor_Variables"]["UFM"]=0
-    json_conf["Call-Monitor_Variables"]["PF"]=0
-    json_conf["Call-Monitor_Variables"]["TF"]=0
-    json_conf["Call-Monitor_Variables"]["CN"]=0
-    json_conf["Call-Monitor_Variables"]["SEU"]=0
+    json_conf_2["Call-Monitor_Variables"]["UFT"]=0
+    json_conf_2["Call-Monitor_Variables"]["UFM"]=0
+    json_conf_3["Call-Monitor_Variables"]["PF"]=0
+    json_conf_3["Call-Monitor_Variables"]["TF"]=0
+    json_conf_2["Call-Monitor_Variables"]["CN"]=0
+    json_conf_2["Call-Monitor_Variables"]["SEU"]=0
 
-    with open(json_file_path,"w") as file:
-        json.dump(json_conf, file,indent=2)
+    with open(json_file_path_1,"w") as file:
+        json.dump(json_conf_1, file,indent=2)
+    with open(json_file_path_2,"w") as file:
+        json.dump(json_conf_2, file,indent=2)
+    with open(json_file_path_3,"w") as file:
+        json.dump(json_conf_3, file,indent=2)
         
     time.sleep(1)
 

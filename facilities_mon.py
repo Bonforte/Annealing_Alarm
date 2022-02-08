@@ -17,7 +17,7 @@ from datetime import datetime
 def Facilities_Monitoring (host, port, database,url, timeout,stop):
     
     #Defining json config file pathing. Change this when moving code from PC to PC.
-    json_file_path = "/home/eliade/Desktop/Annealing_Alarming/Python_Grafana/conf_files/app_conf.json"
+    json_file_path = "/home/eliade/Desktop/Annealing_Alarming/Python_Grafana/conf_files/facilities_conf.json"
 
 
     #Checking if stop condition is active when first starting the code.
